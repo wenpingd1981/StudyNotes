@@ -1,0 +1,162 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{ctex} % 支持中文
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% 定义 theorem 和 definition 环境
+\newtheorem{theorem}{定理}
+\newtheorem{definition}{定义}
+
+\title{Carathéodory定理与近似Carathéodory定理}
+\author{邓文平}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Carathéodory定理}
+
+\textbf{定理陈述：} 在\(\mathbb{R}^n\)中，若点\( x \)属于集合\( S \)的凸包，则\( x \)可以表示为\( S \)中至多\( n+1 \)个点的凸组合。
+
+\textbf{证明过程：}
+
+\subsection{凸组合表示：}
+设\( x \in \operatorname{conv}(S) \)，则存在有限个点\( x_1, x_2, \ldots, x_k \in S \)和系数\( \lambda_1, \lambda_2, \ldots, \lambda_k > 0 \)，使得
+
+\[
+x = \sum_{i=1}^{k} \lambda_i x_i, \quad \sum_{i=1}^{k} \lambda_i = 1.
+\]
+
+若\( k \leq n+1 \)，结论已成立。假设\( k > n+1 \)，需将\( k \)缩减至\( n+1 \)。
+
+\subsection{线性相关性：}
+考虑向量\(\{ (x_i, 1) \}_{i=1}^{k} \subset \mathbb{R}^{n+1}\)。由于\( k > n+1 \)，这组向量线性相关，故存在不全为零的实数\( \alpha_1, \alpha_2, \ldots, \alpha_k \)，使得
+
+\[
+\sum_{i=1}^{k} \alpha_i x_i = 0 \quad \text{且} \quad \sum_{i=1}^{k} \alpha_i = 0.
+\]
+
+\subsection{系数调整：}
+定义新系数\( \lambda'_i = \lambda_i + t \alpha_i \)，其中\( t \in \mathbb{R} \)。此时，
+
+\[
+\sum_{i=1}^{k} \lambda'_i x_i = \sum_{i=1}^{k} (\lambda_i + t \alpha_i) x_i = x + t \cdot 0 = x,
+\]
+
+且
+
+\[
+\sum_{i=1}^{k} \lambda'_i = \sum_{i=1}^{k} (\lambda_i + t \alpha_i) = 1 + t \cdot 0 = 1.
+\]
+
+需选择\( t \)使得所有\( \lambda'_i \geq 0 \)，且至少有一个\( \lambda'_i = 0 \)。
+
+\subsection{确定参数\( t \)：}
+令\( t \)满足：
+
+\[
+t = \min \left\{ -\frac{\lambda_i}{\alpha_i} \, \bigg| \, \alpha_i < 0 \right\} \quad \text{或} \quad t = \max \left\{ \frac{-\lambda_i}{\alpha_i} \, \bigg| \, \alpha_i > 0 \right\}.
+\]
+
+由于\( \sum \alpha_i = 0 \)且\( \alpha_i \)不全为零，必存在正负\( \alpha_i \)。选择上述\( t \)时，至少有一个\( \lambda'_i = 0 \)，其余\( \lambda'_i \geq 0 \)，从而减少一个非零系数。
+
+\subsection{递归缩减：}
+重复上述过程，每次将\( k \)减少1，直到\( k = n+1 \)。此时无法进一步缩减，因为\( n+1 \)个点在\(\mathbb{R}^{n+1}\)齐次坐标下可能线性无关。
+
+\section{近似Carathéodory定理}
+
+\textbf{定理陈述：} 设集合\( K \subset \mathbb{R}^n \)，且所有点满足\( \| v \|_2 \leq R \)。对于任意\( x \in \operatorname{conv}(K) \)和\( \epsilon > 0 \)，存在\( x' \in \operatorname{conv}(K) \)，使得：
+
+\( x' \)是\( K \)中至多\( d = \left\lceil \frac{R^2}{\epsilon^2} \right\rceil \)个点的凸组合；
+
+\( \| x - x' \|_2 \leq \epsilon \)。
+
+\textbf{证明步骤：}
+
+\subsection{凸组合表示：}
+由Carathéodory定理，\( x \)可表示为\( K \)中有限个点的凸组合。设存在点\( v_1, v_2, \ldots, v_k \in K \)及系数\( \lambda_i \geq 0 \)，满足：
+
+\[
+x = \sum_{i=1}^{k} \lambda_i v_i, \quad \sum_{i=1}^{k} \lambda_i = 1.
+\]
+
+\subsection{随机采样构造：}
+定义随机向量\( V \)，以概率\( \lambda_i \)取值为\( v_i \)。独立采样\( d \)次得到\( V_1, V_2, \ldots, V_d \)，构造经验均值：
+
+\[
+x' = \frac{1}{d} \sum_{j=1}^{d} V_j.
+\]
+
+显然，\( x' \)是\( K \)中至多\( d \)个点的凸组合。
+
+\subsection{期望与方差分析：}
+
+\textit{期望：} 由线性性，
+
+\[
+\mathbb{E}[x'] = \mathbb{E}\left[ \frac{1}{d} \sum_{j=1}^{d} V_j \right] = \frac{1}{d} \sum_{j=1}^{d} \mathbb{E}[V_j] = \mathbb{E}[V] = x.
+\]
+
+\textit{方差：} 计算二阶矩：
+
+\[
+\mathbb{E}[\| x' - x \|_2^2] = \mathbb{E}\left[ \left\| \frac{1}{d} \sum_{j=1}^{d} (V_j - x) \right\|_2^2 \right].
+\]
+
+由于\( V_j \)独立，
+
+\[
+\operatorname{Var}(x') = \frac{1}{d^2} \sum_{j=1}^{d} \operatorname{Var}(V_j) = \frac{1}{d} \operatorname{Var}(V).
+\]
+
+因此，
+
+\[
+\mathbb{E}[\| x' - x \|_2^2] = \frac{1}{d} \mathbb{E}[\| V - x \|_2^2].
+\]
+
+
+因为 
+\[
+\mathbb{E}[\| V_1 - V_2 \|_2^2] = \mathbb{E}[\|( V_1- \mathbb{E}[V_1])- (V_2- \mathbb{E}[V_1]) \|_2^2]  = 2\mathbb{E}[\| V - x \|_2^2]
+\]
+
+所以 
+
+\[
+\mathbb{E}[\| V - x \|_2^2] = \frac{1}{2}  \mathbb{E}[\| V_1 - V_2 \|_2^2]
+\]
+
+又由于 \( \| V \|_2 \leq R \)，
+
+\[
+ \mathbb{E}[\| V - x \|_2^2] \leq   \frac{1}{2} (2R)^2 =2R^2
+\]
+
+
+所以，
+
+\[
+\mathbb{E}[\| x' - x \|_2^2] \leq \frac{2R^2}{d}.
+\]
+
+\subsection{存在性论证：}
+由期望不等式，存在至少一个具体的\( x' \)满足：
+
+\[
+\| x' - x \|_2^2 \leq \frac{2R^2}{d}.
+\]
+
+取\( d = \left\lceil \frac{2R^2}{\epsilon^2} \right\rceil \)，则：
+
+\[
+\| x' - x \|_2 \leq \sqrt{ \frac{2R^2}{d} } \leq \epsilon.
+\]
+
+\end{document}
