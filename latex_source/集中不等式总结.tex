@@ -1,0 +1,220 @@
+\documentclass{article}
+\usepackage{amsmath, amsthm, amssymb, amsfonts}
+\usepackage{ctex}
+\usepackage{enumerate}
+\usepackage{hyperref}
+
+\theoremstyle{definition}
+\newtheorem{theorem}{定理}
+\newtheorem{lemma}[theorem]{引理}
+\newtheorem{corollary}[theorem]{推论}
+\newtheorem{definition}[theorem]{定义}
+\newtheorem{example}[theorem]{例子}
+
+
+\renewcommand{\P}{\mathbb{P}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\1}{\mathbf{1}}
+\newcommand{\subg}{\text{Subg}}
+\newcommand{\subexp}{\text{Subexp}}
+
+\title{集中不等式总结 }
+\author{邓文平}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{基础不等式}
+
+\begin{theorem}[马尔可夫不等式]
+设 \( X \) 为非负随机变量，则对任意 \( t > 0 \):
+\[
+\P(X \geq t) \leq \frac{\E[X]}{t}.
+\]
+\end{theorem}
+
+\begin{proof}
+通过期望的定义：
+\[
+\E[X] = \int_0^\infty x d\P_X(x) \geq \int_t^\infty x d\P_X(x) \geq t\int_t^\infty d\P_X(x) = t\P(X \geq t).
+\]
+两边除以 \( t \) 即得结论。
+\end{proof}
+
+\begin{theorem}[切比雪夫不等式]
+设 \( X \) 为随机变量，均值为 \( \mu \)，方差为 \( \sigma^2 \)，则:
+\[
+\P(|X - \mu| \geq t) \leq \frac{\sigma^2}{t^2}.
+\]
+\end{theorem}
+
+\begin{proof}
+对随机变量 \( Y = (X - \mu)^2 \) 应用马尔可夫不等式：
+\[
+\P(|X - \mu| \geq t) = \P(Y \geq t^2) \leq \frac{\E[Y]}{t^2} = \frac{\Var(X)}{t^2}.
+\]
+\end{proof}
+
+
+\begin{theorem}[切尔诺夫界]
+设 \( X = \sum_{i=1}^n X_i \)，其中 \( X_i \) 独立。对任意 \( t > 0 \):
+\[
+\P(X \geq t) \leq \inf_{\lambda > 0} e^{-\lambda t} \E\left[e^{\lambda X}\right].
+\]
+\end{theorem}
+
+\begin{proof}
+对任意 \( \lambda > 0 \)，应用马尔可夫不等式于 \( e^{\lambda X} \)：
+\[
+\P(X \geq t) = \P(e^{\lambda X} \geq e^{\lambda t}) \leq e^{-\lambda t}\E[e^{\lambda X}].
+\]
+取右端关于 \( \lambda \) 的下确界即得结果。
+\end{proof}
+
+\section{高斯分布的尾部概率估计}
+
+\begin{theorem}[高斯尾部概率估计]
+设 \( X \sim \mathcal{N}(0, \sigma^2) \) 为标准高斯随机变量，则对任意 \( t > 0 \)，其尾部概率满足：
+\[
+\P(X \geq t) \leq \frac{1}{2} e^{-t^2/(2\sigma^2)}.
+\]
+更精确的双侧估计为：
+\[
+\P(|X| \geq t) \leq \sqrt{\frac{2}{\pi}} \frac{\sigma}{t} e^{-t^2/(2\sigma^2)} \quad (t > \sigma).
+\]
+\end{theorem}
+
+\begin{proof}
+(单侧估计) 对 \( X \sim \mathcal{N}(0, \sigma^2) \)，计算尾部概率：
+\[
+\P(X \geq t) = \int_t^\infty \frac{1}{\sqrt{2\pi\sigma^2}} e^{-x^2/(2\sigma^2)} dx.
+\]
+作变量替换 \( y = x/\sigma \)，得：
+\[
+= \int_{t/\sigma}^\infty \frac{1}{\sqrt{2\pi}} e^{-y^2/2} dy.
+\]
+利用不等式 \( \int_u^\infty e^{-y^2/2} dy \leq \frac{1}{u} e^{-u^2/2} \) （当 \( u > 0 \)），取 \( u = t/\sigma \) 即得：
+\[
+\P(X \geq t) \leq \frac{\sigma}{t\sqrt{2\pi}} e^{-t^2/(2\sigma^2)} \leq \frac{1}{2} e^{-t^2/(2\sigma^2)}.
+\]
+
+(精确双侧估计) 通过分部积分可得递推式：
+\[
+\int_t^\infty e^{-y^2/2} dy = \frac{e^{-t^2/2}}{t} - \int_t^\infty \frac{e^{-y^2/2}}{y^2} dy \leq \frac{e^{-t^2/2}}{t}.
+\]
+结合对称性 \( \P(|X| \geq t) = 2\P(X \geq t) \) 即得结果。
+\end{proof}
+
+
+
+\section{次高斯分布与次指数分布}
+
+\begin{definition}[次高斯分布]
+随机变量 \( X \) 称为参数为 \( \sigma \) 的\textbf{次高斯分布}（记作 \( X \sim \subg(\sigma^2) \)），如果满足:
+\[
+\E\left[e^{\lambda (X - \E X)}\right] \leq e^{\frac{\lambda^2 \sigma^2}{2}}, \quad \forall \lambda \in \R.
+\]
+\end{definition}
+
+\begin{proof}[尾概率证明]
+对任意 \( t > 0 \)，取 \( \lambda = t/\sigma^2 \)，应用切尔诺夫界：
+\[
+\P(X - \E X \geq t) \leq e^{-\lambda t} e^{\lambda^2 \sigma^2/2} = e^{-t^2/(2\sigma^2)}.
+\]
+结合 \( -X \) 的情况即得双侧界。
+\end{proof}
+
+\section{霍夫丁不等式}
+
+\begin{theorem}[对称伯努利变量的霍夫丁不等式]
+设 \( X_1, \dots, X_n \) 为独立对称伯努利随机变量（即 \( \P(X_i = 1) = \P(X_i = -1) = \frac{1}{2} \)），令 \( S_n = \sum_{i=1}^n X_i \)。则对任意 \( t > 0 \)：
+\[
+\P(S_n \geq t) \leq \exp\left(-\frac{t^2}{2n}\right).
+\]
+双侧形式为：
+\[
+\P(|S_n| \geq t) \leq 2\exp\left(-\frac{t^2}{2n}\right).
+\]
+\end{theorem}
+
+\begin{proof}
+\textbf{方法一}（从一般霍夫丁不等式导出）：
+由于 \( X_i \in [-1,1] \) 且 \( \E X_i = 0 \)，应用标准霍夫丁不等式：
+\[
+\sum_{i=1}^n (b_i - a_i)^2 = \sum_{i=1}^n (1 - (-1))^2 = 4n.
+\]
+代入得：
+\[
+\P(S_n \geq t) \leq \exp\left(-\frac{2t^2}{4n}\right) = \exp\left(-\frac{t^2}{2n}\right).
+\]
+
+\textbf{方法二}（直接矩生成函数计算）：
+计算单个变量的矩生成函数：
+\[
+\E[e^{\lambda X_i}] = \cosh(\lambda) \leq e^{\lambda^2/2}.
+\]
+利用独立性：
+\[
+\E[e^{\lambda S_n}] = \prod_{i=1}^n \E[e^{\lambda X_i}] \leq e^{n\lambda^2/2}.
+\]
+应用切尔诺夫界：
+\[
+\P(S_n \geq t) \leq \inf_{\lambda > 0} e^{-\lambda t} e^{n\lambda^2/2} = e^{-t^2/(2n)}.
+\]
+其中最优 \( \lambda = t/n \)。
+\end{proof}
+
+\begin{corollary}[次高斯性验证]
+对称伯努利变量 \( X_i \) 是 \( \subg(1) \) 的，其和 \( S_n \sim \subg(n) \)。
+\end{corollary}
+
+\begin{proof}
+由矩生成函数估计：
+\[
+\E[e^{\lambda X_i}] = \frac{e^\lambda + e^{-\lambda}}{2} = \cosh(\lambda) \leq e^{\lambda^2/2}.
+\]
+和变量满足 \( \E[e^{\lambda S_n}] \leq e^{n\lambda^2/2} \)，符合次高斯性定义。
+\end{proof}
+
+\begin{theorem}[霍夫丁不等式]
+设 \( X_1, \dots, X_n \) 为独立随机变量，满足 \( X_i \in [a_i, b_i] \) 几乎必然成立。令 \( S_n = \sum_{i=1}^n (X_i - \E X_i) \)，则对任意 \( t > 0 \):
+\[
+\P(S_n \geq t) \leq \exp\left(-\frac{2t^2}{\sum_{i=1}^n (b_i - a_i)^2}\right).
+\]
+\end{theorem}
+
+\begin{proof}
+关键步骤：
+1. 对每个 \( X_i - \E X_i \) 建立次高斯性，其参数 \( \sigma_i = (b_i - a_i)/2 \)
+2. 利用独立性得 \( S_n \) 的矩生成函数：
+\[
+\E[e^{\lambda S_n}] = \prod_{i=1}^n \E[e^{\lambda (X_i - \E X_i)}] \leq \prod_{i=1}^n e^{\lambda^2 (b_i - a_i)^2/8}
+\]
+3. 应用切尔诺夫界并优化 \( \lambda \)
+\end{proof}
+
+\section{基于鞅的不等式}
+
+\begin{theorem}[Azuma-Hoeffding不等式]
+设 \( \{X_i\}_{i=0}^n \) 为鞅序列，满足 \( |X_i - X_{i-1}| \leq c_i \) 几乎必然成立。则对任意 \( t > 0 \):
+\[
+\P(|X_n - X_0| \geq t) \leq 2 \exp\left(-\frac{t^2}{2 \sum_{i=1}^n c_i^2}\right).
+\]
+\end{theorem}
+
+\begin{proof}
+构造鞅差序列 \( D_i = X_i - X_{i-1} \)，利用霍夫丁引理证明每个 \( D_i \) 的次高斯性，再通过矩生成函数的乘积性质完成证明。
+\end{proof}
+
+\section{应用说明}
+\begin{itemize}
+\item 次高斯性是推导高斯向量Lipschitz函数尖锐界限的关键
+\item McDiarmid不等式在机器学习中广泛用于算法稳定性分析
+\item Azuma不等式适用于依赖过程（例如具有依赖性的随机游走）
+\end{itemize}
+
+\end{document}
